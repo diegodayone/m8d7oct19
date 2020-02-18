@@ -2,6 +2,7 @@ const express = require("express")
 const passport = require("passport")
 const userModel = require("../models/user")
 const { createToken } = require("../utils/auth")
+const mongoose = require("mongoose")
 
 const router = express.Router()
 
@@ -37,6 +38,32 @@ router.post("/refresh", passport.authenticate("jwt"), async (req, res)=>{
         access_token: token,
         user: req.user
     })
+})
+
+// router.post("/admin", passport.authenticate("jwt"), async (req, res)=>{
+//     const update = await userModel.findOneAndUpdate({ _id: req.user._id }, { role: "Admin"})
+//     res.send(update)
+// })
+
+
+router.put("/:userId", passport.authenticate("jwt"), async (req, res)=>{
+    delete req.body.username
+    delete req.body._id
+    delete req.body.hash
+    delete req.body.salt
+
+    // const userId = new mongoose.Types.ObjectId(req.params.userId)
+    // const reqUserId = new mongoose.Types.ObjectId(req.user._id)
+
+    // console.log(userId)
+    // console.log(req.user._id)
+
+    if (req.user._id.toString() !== req.params.userId && req.user.role !== "Admin")
+        return res.status(401).send("cannot modify another user")
+    else{
+        const update = await userModel.findOneAndUpdate({ _id: req.params.userId }, req.body)
+        res.send(update)
+    }
 })
 
 module.exports = router
