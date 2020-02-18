@@ -14,8 +14,7 @@ app.use(passport.initialize())
 app.use(cors())
 app.use(express.json())
 
-app.use("/", (req, res)=> res.send("Hello, and welcome to our web service"))
 app.use("/auth", userRouter)
-
+app.get("/", (req, res)=> res.send("Hello, and welcome to our web service"))
 
 app.listen(process.env.PORT || 4001, () => console.log("server is listening!"))
