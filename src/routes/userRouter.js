@@ -45,18 +45,11 @@ router.post("/refresh", passport.authenticate("jwt"), async (req, res)=>{
 //     res.send(update)
 // })
 
-
 router.put("/:userId", passport.authenticate("jwt"), async (req, res)=>{
     delete req.body.username
     delete req.body._id
     delete req.body.hash
     delete req.body.salt
-
-    // const userId = new mongoose.Types.ObjectId(req.params.userId)
-    // const reqUserId = new mongoose.Types.ObjectId(req.user._id)
-
-    // console.log(userId)
-    // console.log(req.user._id)
 
     if (req.user._id.toString() !== req.params.userId && req.user.role !== "Admin")
         return res.status(401).send("cannot modify another user")
