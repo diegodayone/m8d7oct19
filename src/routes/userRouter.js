@@ -4,6 +4,16 @@ const userModel = require("../models/user")
 const { createToken } = require("../utils/auth")
 const mongoose = require("mongoose")
 
+const multer = require('multer')
+const MulterAzureStorage = require('multer-azure-storage')
+const upload = multer({
+  storage: new MulterAzureStorage({
+    azureStorageConnectionString: process.env.AZURE_STORAGE,
+    containerName: 'images',
+    containerSecurity: 'blob'
+  })
+})
+
 const router = express.Router()
 
 router.get("/", async (req, res)=> res.send(await userModel.find({})))
@@ -57,6 +67,19 @@ router.put("/:userId", passport.authenticate("jwt"), async (req, res)=>{
         const update = await userModel.findOneAndUpdate({ _id: req.params.userId }, req.body)
         res.send(update)
     }
+})
+
+router.post("/uploadPicture", 
+        passport.authenticate("jwt"), //check the token and set the user info into req.user
+        upload.single("image"), //save the picture and set the pic info into req.file
+        async (req, res) => {
+
+    //save into the database the url
+    await userModel.findByIdAndUpdate(req.user._id, {
+        image: req.file.url
+    })
+    //return the url
+    res.send(req.file.url)
 })
 
 module.exports = router
