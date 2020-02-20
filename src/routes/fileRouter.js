@@ -3,8 +3,8 @@ const { BlobServiceClient, StorageSharedKeyCredential } = require("@azure/storag
 const multer = require("multer")
 
 const router = express.Router()
-const credentials = new StorageSharedKeyCredential("striveliveoct19", process.env.AZURE_STORAGE_KEY)
-const blobClient = new BlobServiceClient("https://striveliveoct19.blob.core.windows.net/",  credentials)
+const credentials = new StorageSharedKeyCredential("debriefm8d8", process.env.AZURE_STORAGE_KEY)
+const blobClient = new BlobServiceClient("https://debriefm8d8.blob.core.windows.net/",  credentials)
 
 
 router.get("/", async (req, res)=>{
@@ -19,7 +19,6 @@ router.get("/", async (req, res)=>{
 
 router.get("/:containerName", async (req, res)=>{
     try{
-        
         const container = await blobClient.getContainerClient(req.params.containerName)
         const files = container.listBlobsFlat()
         const toReturn = []

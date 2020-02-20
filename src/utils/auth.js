@@ -25,5 +25,6 @@ passport.use(new JwtStrategy({
 } ))
 
 module.exports = {
-    createToken: (userInfo) => jwt.sign(userInfo, process.env.KEY, { expiresIn: 3600 * 24 })
+    createToken: (userInfo) => jwt.sign(userInfo, process.env.KEY, { expiresIn: 3600 * 24 }),
+    verifyToken: (token) => jwt.verify(token, process.env.KEY).username
 }

@@ -15,8 +15,8 @@ const upload = multer({
   })
 })
 
-const credentials = new StorageSharedKeyCredential("striveliveoct19", process.env.AZURE_STORAGE_KEY )
-const blobClient = new BlobServiceClient("https://striveliveoct19.blob.core.windows.net/",  credentials)
+const credentials = new StorageSharedKeyCredential("debriefm8d8", process.env.AZURE_STORAGE_KEY )
+const blobClient = new BlobServiceClient("https://debriefm8d8.blob.core.windows.net/",  credentials)
 
 const router = express.Router()
 
@@ -64,6 +64,7 @@ router.put("/:userId", passport.authenticate("jwt"), async (req, res)=>{
     delete req.body._id
     delete req.body.hash
     delete req.body.salt
+    delete req.body.image
 
     if (req.user._id.toString() !== req.params.userId && req.user.role !== "Admin")
         return res.status(401).send("cannot modify another user")
