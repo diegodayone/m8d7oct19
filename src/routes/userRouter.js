@@ -4,19 +4,19 @@ const userModel = require("../models/user")
 const { createToken } = require("../utils/auth")
 const mongoose = require("mongoose")
 
-const { BlobServiceClient, StorageSharedKeyCredential } = require("@azure/storage-blob")
-const multer = require('multer')
-const MulterAzureStorage = require('multer-azure-storage')
-const upload = multer({
-  storage: new MulterAzureStorage({
-    azureStorageConnectionString: process.env.AZURE_STORAGE,
-    containerName: 'images',
-    containerSecurity: 'blob'
-  })
-})
+// const { BlobServiceClient, StorageSharedKeyCredential } = require("@azure/storage-blob")
+// const multer = require('multer')
+// const MulterAzureStorage = require('multer-azure-storage')
+// const upload = multer({
+//   storage: new MulterAzureStorage({
+//     azureStorageConnectionString: process.env.AZURE_STORAGE,
+//     containerName: 'images',
+//     containerSecurity: 'blob'
+//   })
+// })
 
-const credentials = new StorageSharedKeyCredential("debriefm8d8", process.env.AZURE_STORAGE_KEY )
-const blobClient = new BlobServiceClient("https://debriefm8d8.blob.core.windows.net/",  credentials)
+// const credentials = new StorageSharedKeyCredential("debriefm8d8", process.env.AZURE_STORAGE_KEY )
+// const blobClient = new BlobServiceClient("https://debriefm8d8.blob.core.windows.net/",  credentials)
 
 const router = express.Router()
 
@@ -74,24 +74,24 @@ router.put("/:userId", passport.authenticate("jwt"), async (req, res)=>{
     }
 })
 
-router.post("/uploadPicture", 
-        passport.authenticate("jwt"), //check the token and set the user info into req.user
-        upload.single("image"), //save the picture and set the pic info into req.file
-        async (req, res) => {
+// router.post("/uploadPicture", 
+//         passport.authenticate("jwt"), //check the token and set the user info into req.user
+//         upload.single("image"), //save the picture and set the pic info into req.file
+//         async (req, res) => {
 
-    if (req.user.image){ //if we have a previous image
-        const container = blobClient.getContainerClient("images"); //we take a reference to the container
-        const urlParts = req.user.image.split("/") // we select the name of the previous picture
-        const filename = urlParts.reverse()[0]
-        await container.deleteBlob(filename) // we delete the previous picture
-    }
+//     if (req.user.image){ //if we have a previous image
+//         const container = blobClient.getContainerClient("images"); //we take a reference to the container
+//         const urlParts = req.user.image.split("/") // we select the name of the previous picture
+//         const filename = urlParts.reverse()[0]
+//         await container.deleteBlob(filename) // we delete the previous picture
+//     }
 
-    //save into the database the url
-    await userModel.findByIdAndUpdate(req.user._id, {
-        image: req.file.url
-    })
-    //return the url
-    res.send(req.file.url)
-})
+//     //save into the database the url
+//     await userModel.findByIdAndUpdate(req.user._id, {
+//         image: req.file.url
+//     })
+//     //return the url
+//     res.send(req.file.url)
+// })
 
 module.exports = router
